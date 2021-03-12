@@ -1,9 +1,9 @@
 import React from "react";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import { View, Text, StyleSheet, Button, FlatList } from "react-native";
+import { StyleSheet } from "react-native";
 import { DATA } from "../data";
-import { Post } from "../components/Post";
 import { AppHeaderIcon } from "../components/AppHeaderIcon";
+import { PostList } from "../components/PostList";
 
 export const BookedScreen = ({ navigation, route }) => {
   const openPostHandler = (post) => {
@@ -31,20 +31,11 @@ export const BookedScreen = ({ navigation, route }) => {
             onPress={() => console.log("Press drower")}
           />
         </HeaderButtons>
-        // <Ionicons name="ios-camera" size={24} color="black" />
       ),
     });
   }, [navigation]);
-
-  return (
-    <View style={styles.wrapper}>
-      <FlatList
-        data={DATA.filter((post) => post.booked)}
-        keyExtractor={(post) => post.id.toString()}
-        renderItem={({ item }) => <Post post={item} onOpen={openPostHandler} />}
-      />
-    </View>
-  );
+  const data = DATA.filter((post) => post.booked);
+  return <PostList data={data} onOpen={openPostHandler} />;
 };
 
 // MainScreen.navigationOptions = {

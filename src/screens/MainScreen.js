@@ -1,9 +1,10 @@
 import React from "react";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import { View, Text, StyleSheet, Button, FlatList } from "react-native";
+
 import { DATA } from "../data";
 import { Post } from "../components/Post";
 import { AppHeaderIcon } from "../components/AppHeaderIcon";
+import { PostList } from "../components/PostList";
 
 export const MainScreen = ({ navigation, route }) => {
   const openPostHandler = (post) => {
@@ -28,23 +29,14 @@ export const MainScreen = ({ navigation, route }) => {
           <Item
             title="Drower"
             iconName="ios-menu"
-            onPress={() => console.log("Press drower")}
+            onPress={() => navigation.toggleDrawer()}
           />
         </HeaderButtons>
-        // <Ionicons name="ios-camera" size={24} color="black" />
       ),
     });
   }, [navigation]);
 
-  return (
-    <View style={styles.wrapper}>
-      <FlatList
-        data={DATA}
-        keyExtractor={(post) => post.id.toString()}
-        renderItem={({ item }) => <Post post={item} onOpen={openPostHandler} />}
-      />
-    </View>
-  );
+  return <PostList data={DATA} onOpen={openPostHandler} />;
 };
 
 // MainScreen.navigationOptions = {
@@ -61,8 +53,3 @@ export const MainScreen = ({ navigation, route }) => {
 //     </HeaderButtons>
 //   ),
 // };
-const styles = StyleSheet.create({
-  wrapper: {
-    padding: 10,
-  },
-});
