@@ -1,10 +1,15 @@
 import { LOAD_POSTS, REMOVE_POST, TOGGLE_BOOKED, ADD_POST } from "../types";
-import { DATA } from "../../data";
+import { DB } from "../../db";
+import * as FileSystem from "expo-file-system";
 
 export const loadPosts = () => {
-  return {
-    type: LOAD_POSTS,
-    payload: DATA,
+  DB.getPosts();
+  return async (dispatch) => {
+    const posts = await DB.getPosts();
+    dispatch({
+      type: LOAD_POSTS,
+      payload: posts,
+    });
   };
 };
 
@@ -21,11 +26,27 @@ export const removePost = (id) => {
     payload: id,
   };
 };
-export const addPost = (post) => {
-  post.id = Date.now().toString();
+export const addPost = (post) => async (dispatch) => {
+  const fileName = post.img.split("/").pop();
+  const newPath = FileSystem.documentDirectory + fileName;
 
-  return {
+  try {
+    await FileSystem.moveAsync({
+      to: newPath,
+      from: post.img,
+    });
+  } catch (e) {
+    console.log("Error:", e);
+  }
+
+  const payload = { ...post, img: newPath };
+  console.log("payload1", payload);
+  const id = await DB.createPost(payload);
+
+  payload.id = id;
+  console.log("payload2", payload);
+  dispatch({
     type: ADD_POST,
-    payload: post,
-  };
+    payload,
+  });
 };

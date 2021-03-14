@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import {
   View,
@@ -14,19 +14,18 @@ import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { THEME } from "../theme";
 import { AppHeaderIcon } from "../components/AppHeaderIcon";
 import { addPost } from "../store/actions/postAction";
+import { PhotoPicker } from "../components/PhotoPicker";
 
 export const CreateScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const [text, setText] = useState("");
-
-  const img =
-    "https://static.coindesk.com/wp-content/uploads/2019/01/shutterstock_1012724596-860x430.jpg";
+  const imgRef = useRef();
 
   const saveHandler = () => {
     const post = {
       date: new Date().toJSON(),
       text: text,
-      img: img,
+      img: imgRef.current,
       booked: false,
     };
     dispatch(addPost(post));
@@ -38,7 +37,7 @@ export const CreateScreen = ({ navigation, route }) => {
       headerLeft: () => (
         <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
           <Item
-            title="Drower"
+            title="Drawer"
             iconName="ios-menu"
             onPress={() => navigation.toggleDrawer()}
           />
@@ -46,7 +45,9 @@ export const CreateScreen = ({ navigation, route }) => {
       ),
     });
   }, [navigation]);
-
+  const photoPickHandler = (uri) => {
+    imgRef.current = uri;
+  };
   return (
     <ScrollView>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -59,16 +60,12 @@ export const CreateScreen = ({ navigation, route }) => {
             onChangeText={setText}
             multiline
           />
-          <Image
-            style={{ width: "100%", height: 200, marginBottom: 10 }}
-            source={{
-              uri: img,
-            }}
-          />
+          <PhotoPicker onPick={photoPickHandler} />
           <Button
             title="Создать пост"
             color={THEME.MAIN_COLOR}
             onPress={saveHandler}
+            disabled={!text}
           />
         </View>
       </TouchableWithoutFeedback>
