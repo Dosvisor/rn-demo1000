@@ -1,7 +1,7 @@
 import React from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { StyleSheet } from "react-native";
-import { DATA } from "../data";
 import { AppHeaderIcon } from "../components/AppHeaderIcon";
 import { PostList } from "../components/PostList";
 
@@ -12,30 +12,33 @@ export const BookedScreen = ({ navigation, route }) => {
 
   React.useEffect(() => {
     navigation.setOptions({
-      headerTitle: "Main",
+      headerTitle: "Избранное",
       headerRight: () => (
         <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
           <Item
             title="Take photo"
             iconName="ios-camera"
-            onPress={() => console.log("Press photo")}
+            onPress={() => navigation.navigate("Create")}
           />
         </HeaderButtons>
-        // <Ionicons name="ios-camera" size={24} color="black" />
       ),
       headerLeft: () => (
         <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
           <Item
             title="Drower"
             iconName="ios-menu"
-            onPress={() => console.log("Press drower")}
+            onPress={() => navigation.toggleDrawer()}
           />
         </HeaderButtons>
       ),
     });
   }, [navigation]);
-  const data = DATA.filter((post) => post.booked);
-  return <PostList data={data} onOpen={openPostHandler} />;
+
+  const bookedPosts = useSelector((state) =>
+    state.post.allPosts.filter((post) => post.booked)
+  );
+
+  return <PostList data={bookedPosts} onOpen={openPostHandler} />;
 };
 
 // MainScreen.navigationOptions = {

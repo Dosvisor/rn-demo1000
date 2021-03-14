@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { Provider } from "react-redux";
 import { StyleSheet, Text, View } from "react-native";
 import { bootstrap } from "./src/bootstrap";
 import { AppNavigation } from "./src/navigation/AppNavigation";
 import AppLoading from "expo-app-loading";
+import store from "./src/store";
 
 export default function App() {
   const [isReady, setIsReady] = useState(false);
@@ -17,7 +19,11 @@ export default function App() {
     );
   }
 
-  return <AppNavigation />;
+  return (
+    <Provider store={store}>
+      <AppNavigation />
+    </Provider>
+  );
 }
 
 const styles = StyleSheet.create({

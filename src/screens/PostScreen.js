@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   View,
   Text,
@@ -8,17 +9,25 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-import { DATA } from "../data";
 import { THEME } from "../theme";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { AppHeaderIcon } from "../components/AppHeaderIcon";
+import { removePost, toggleBooked } from "../store/actions/postAction";
 
 export const PostScreen = ({ navigation, route }) => {
   const postId = route.params?.postId;
-  const post = DATA.find((p) => p.id === postId);
+  const post = useSelector((state) =>
+    state.post.allPosts.find((p) => p.id === postId)
+  );
+
+  const booked = useSelector((state) =>
+    state.post.bookedPosts.some((post) => post.id === postId)
+  );
+
   const date = route.params?.date;
-  React.useLayoutEffect(() => {
-    const iconName = post.booked ? "ios-star" : "ios-star-outline";
+  useEffect(() => {
+    let iconName = booked ? "ios-star" : "ios-star-outline";
+
     navigation.setOptions({
       headerTitle: "Пост Пост" + postId + new Date(date).toLocaleDateString(),
       headerRight: () => (
@@ -26,12 +35,17 @@ export const PostScreen = ({ navigation, route }) => {
           <Item
             title="Take photo"
             iconName={iconName}
-            onPress={() => console.log("Press photo")}
+            onPress={toggleHandler}
           />
         </HeaderButtons>
       ),
     });
-  }, [navigation]);
+  }, [navigation, booked]);
+
+  const dispatch = useDispatch();
+  const toggleHandler = useCallback(() => {
+    dispatch(toggleBooked(postId));
+  }, [dispatch, postId]);
 
   const removeHandler = () => {
     Alert.alert(
@@ -42,11 +56,23 @@ export const PostScreen = ({ navigation, route }) => {
           text: "Отменить",
           style: "cancel",
         },
-        { text: "OK", style: "destructive", onPress: () => () => {} },
+        {
+          text: "OK",
+          style: "destructive",
+          onPress() {
+            navigation.navigate("Main");
+            dispatch(removePost(postId));
+          },
+        },
       ],
       { cancelable: false }
     );
   };
+
+  if (!post) {
+    return null;
+  }
+
   return (
     <ScrollView>
       <Image style={styles.image} source={{ uri: post.img }} />
@@ -61,10 +87,6 @@ export const PostScreen = ({ navigation, route }) => {
     </ScrollView>
   );
 };
-
-// PostScreen.navigationOptions = ({ navigation, route }) => {
-//
-// };
 
 const styles = StyleSheet.create({
   image: {

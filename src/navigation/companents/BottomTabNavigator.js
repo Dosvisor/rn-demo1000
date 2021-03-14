@@ -1,17 +1,23 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { BookedScreen } from "../../screens/BookedScreen";
-import { MainStackNavigator } from "./PostScreens";
+import { MainStackNavigator } from "./MainStackNavigator";
 import { THEME } from "../../theme";
 import { Ionicons } from "@expo/vector-icons";
 import { Platform } from "react-native";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import { BookedStackNavigator } from "./BookedNavigator";
 
 const Tab =
   Platform.OS === "android"
     ? createMaterialBottomTabNavigator()
     : createBottomTabNavigator();
-const BottomTabNavigator = () => {
+const BottomTabNavigator = ({ navigation, route }) => {
+  // React.useEffect(() => {
+  //   navigation.setOptions({
+  //     drawerLabel: "Главная",
+  //   });
+  // }, [navigation]);
   return (
     <Tab.Navigator
       shifting={true}
@@ -32,7 +38,7 @@ const BottomTabNavigator = () => {
       />
       <Tab.Screen
         name="Booked"
-        component={BookedScreen}
+        component={BookedStackNavigator}
         options={{
           tabBarLabel: "Избранное",
           tabBarIcon: ({ color, focused, size }) => (

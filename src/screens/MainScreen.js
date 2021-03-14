@@ -1,10 +1,10 @@
 import React from "react";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
-
-import { DATA } from "../data";
+import { useDispatch, useSelector } from "react-redux";
 import { Post } from "../components/Post";
 import { AppHeaderIcon } from "../components/AppHeaderIcon";
 import { PostList } from "../components/PostList";
+import { loadPosts } from "../store/actions/postAction";
 
 export const MainScreen = ({ navigation, route }) => {
   const openPostHandler = (post) => {
@@ -13,21 +13,20 @@ export const MainScreen = ({ navigation, route }) => {
 
   React.useEffect(() => {
     navigation.setOptions({
-      headerTitle: "Main",
+      headerTitle: "Мой блог",
       headerRight: () => (
         <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
           <Item
             title="Take photo"
             iconName="ios-camera"
-            onPress={() => console.log("Press photo")}
+            onPress={() => navigation.navigate("Create")}
           />
         </HeaderButtons>
-        // <Ionicons name="ios-camera" size={24} color="black" />
       ),
       headerLeft: () => (
         <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
           <Item
-            title="Drower"
+            title="Drawer"
             iconName="ios-menu"
             onPress={() => navigation.toggleDrawer()}
           />
@@ -36,20 +35,13 @@ export const MainScreen = ({ navigation, route }) => {
     });
   }, [navigation]);
 
-  return <PostList data={DATA} onOpen={openPostHandler} />;
-};
+  const dispatch = useDispatch();
 
-// MainScreen.navigationOptions = {
-//   title: "hello",
-//   headerRight: () => (
-//     <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
-//       <Item
-//         title="camera-sharp"
-//         iconName="md-camera-sharp"
-//         onPress={() => {
-//           console.log("take foto");
-//         }}
-//       />
-//     </HeaderButtons>
-//   ),
-// };
+  React.useEffect(() => {
+    dispatch(loadPosts()); //Диспатчим экшн
+  }, [dispatch]);
+
+  const allPosts = useSelector((state) => state.post.allPosts);
+
+  return <PostList data={allPosts} onOpen={openPostHandler} />;
+};
