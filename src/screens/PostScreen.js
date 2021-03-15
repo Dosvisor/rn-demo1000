@@ -44,7 +44,7 @@ export const PostScreen = ({ navigation, route }) => {
 
   const dispatch = useDispatch();
   const toggleHandler = useCallback(() => {
-    dispatch(toggleBooked(postId));
+    dispatch(toggleBooked(post));
   }, [dispatch, postId]);
 
   const removeHandler = () => {
