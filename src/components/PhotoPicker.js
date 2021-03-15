@@ -32,7 +32,7 @@ export const PhotoPicker = ({ onPick, created }) => {
     setImage(img.uri);
     onPick(img.uri);
   };
-  console.log("image", image, created);
+
   return (
     <View style={styles.wrapper}>
       <Button title="Сделать фото" onPress={takePhoto} />
