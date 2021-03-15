@@ -29,7 +29,7 @@ export const PostScreen = ({ navigation, route }) => {
     let iconName = booked ? "ios-star" : "ios-star-outline";
 
     navigation.setOptions({
-      headerTitle: "Пост Пост" + postId + new Date(date).toLocaleDateString(),
+      headerTitle: "Пост" + postId + new Date(date).toLocaleDateString(),
       headerRight: () => (
         <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
           <Item
