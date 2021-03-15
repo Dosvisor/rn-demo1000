@@ -19,17 +19,20 @@ import { PhotoPicker } from "../components/PhotoPicker";
 export const CreateScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const [text, setText] = useState("");
+  const [pic, setPic] = useState(false);
   const imgRef = useRef();
 
   const saveHandler = () => {
     const post = {
       date: new Date().toJSON(),
       text: text,
-      img: imgRef.current,
+      img: pic,
       booked: false,
     };
     dispatch(addPost(post));
     navigation.navigate("Main");
+    setText("");
+    setPic("");
   };
   React.useEffect(() => {
     navigation.setOptions({
@@ -46,7 +49,7 @@ export const CreateScreen = ({ navigation, route }) => {
     });
   }, [navigation]);
   const photoPickHandler = (uri) => {
-    imgRef.current = uri;
+    setPic(uri);
   };
   return (
     <ScrollView>
@@ -60,12 +63,12 @@ export const CreateScreen = ({ navigation, route }) => {
             onChangeText={setText}
             multiline
           />
-          <PhotoPicker onPick={photoPickHandler} />
+          <PhotoPicker created={pic} onPick={photoPickHandler} />
           <Button
             title="Создать пост"
             color={THEME.MAIN_COLOR}
             onPress={saveHandler}
-            disabled={!text}
+            disabled={!text || !pic}
           />
         </View>
       </TouchableWithoutFeedback>

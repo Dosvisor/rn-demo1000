@@ -3,7 +3,6 @@ import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
 import { View, StyleSheet, Button, Image } from "react-native";
 import { Alert } from "react-native";
-// import CAMERA_ROLL from "expo-media-library";
 
 async function askForPermissions() {
   const status = await Permissions.askAsync(
@@ -17,7 +16,7 @@ async function askForPermissions() {
   return true;
 }
 
-export const PhotoPicker = ({ onPick }) => {
+export const PhotoPicker = ({ onPick, created }) => {
   const [image, setImage] = useState(null);
   const takePhoto = async () => {
     const hasPermissions = await askForPermissions();
@@ -33,10 +32,13 @@ export const PhotoPicker = ({ onPick }) => {
     setImage(img.uri);
     onPick(img.uri);
   };
+  console.log("image", image, created);
   return (
     <View style={styles.wrapper}>
       <Button title="Сделать фото" onPress={takePhoto} />
-      {image && <Image style={styles.image} source={{ uri: image }} />}
+      {image && created !== "" && (
+        <Image style={styles.image} source={{ uri: image }} />
+      )}
     </View>
   );
 };
